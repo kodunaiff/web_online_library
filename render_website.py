@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
+from more_itertools import chunked
 
 load_dotenv()
 library_path = os.environ['LIBRARY_PATH']
@@ -25,7 +26,7 @@ def on_reload():
         image_url = image_link.path.split('/')[2]
         book['image_link'] = f'library_folder/{image_url}'
 
-    rendered_page = template.render(library=library)
+    rendered_page = template.render(library=chunked(library, 2))
     with open('index.html', 'w', encoding="utf8") as file:
         file.write(rendered_page)
 
