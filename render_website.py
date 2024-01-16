@@ -9,6 +9,7 @@ from more_itertools import chunked
 
 load_dotenv()
 library_path = os.environ['LIBRARY_PATH']
+os.makedirs('pages', exist_ok=True)
 
 
 def on_reload():
@@ -27,9 +28,13 @@ def on_reload():
         book['image_link'] = os.path.join('library_folder', image_url)
         book['book_path'] = os.path.join('library_folder', f"{book['book_name']}.txt")
 
-    rendered_page = template.render(library=chunked(library, 2))
-    with open('index.html', 'w', encoding="utf8") as file:
-        file.write(rendered_page)
+    pages = chunked(library, 10)
+    for number, page in enumerate(pages, 1):
+        rendered_page = template.render(library=chunked(page, 2))
+        page_path = os.path.join('pages', f'index{number}.html')
+        with open(page_path, 'w', encoding="utf8") as file:
+            file.write(rendered_page)
+
 
 
 on_reload()
