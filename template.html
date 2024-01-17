@@ -11,10 +11,14 @@
     <title>Электронная библиотека</title>
   </head>
   <body>
+  <div class="mx-auto" style="width: 100px;">
     <h1>Электронная библиотека</h1>
+    </div>
 
+
+<div class="container px-2">
 <nav aria-label="Page navigation example" >
-  <ul class="pagination justify-content-center" >
+  <ul class="pagination" >
     {% if page_number == 1 %}
     <li class="page-item disabled"><a class="page-link" href="#">Предыдущая</a></li>
     {% else %}
@@ -34,7 +38,7 @@
     {% endif %}
   </ul>
 </nav>
-
+ </div>
 
   {% for books in library %}
     <div class="container">
@@ -49,6 +53,9 @@
           <div class="card-body">
             <h5 class="card-title">{{book.book_name}}</h5>
             <p class="card-text">{{book.book_author}}</p>
+            {% for genre in book.book_genres %}
+            <h6><span class="badge badge-secondary">{{genre}}</span></h6>
+            {% endfor %}
             <a href=../{{book.book_path|urlencode}} target="_blank" rel="noopener noreferrer" >Читать</a>
           </div>
         </div>
