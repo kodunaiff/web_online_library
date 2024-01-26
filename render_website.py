@@ -23,9 +23,8 @@ def on_reload():
     library = json.loads(library_json)
     for book in library:
         image_link = urlsplit(book["image_link"])
-        image_url = image_link.path.split('/')[2]
-        book['image_link'] = os.path.join('media', image_url)
-        book['book_path'] = os.path.join('media', f"{book['book_name']}.txt")
+        book['image_link'] = image_link.path.split('/')[2]
+        book['book_path'] = os.path.join(f"{book['book_name']}.txt")
 
     page_quantity_books = 10
     pages = chunked(library, page_quantity_books)
