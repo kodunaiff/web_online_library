@@ -1,3 +1,4 @@
+import argparse
 import json
 import math
 import os
@@ -7,20 +8,43 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
 from more_itertools import chunked
 
-os.makedirs('pages', exist_ok=True)
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description='Скрипт для создании онлайн-библиотеки'
+    )
+    parser.add_argument(
+        '-f',
+        '--file_folder',
+        help='путь к каталогу с файлами',
+        type=str,
+        default='media/'
+    )
+    parser.add_argument(
+        '-p',
+        '--page_folder',
+        help='путь к каталогу со страницами представления',
+        type=str,
+        default='pages/'
+    )
+    args = parser.parse_args()
+    file_folder = args.file_folder
+    page_folder = args.page_folder
+    return file_folder, page_folder
 
 
 def on_reload():
+    file_folder, page_folder = parse_arguments()
+    os.makedirs(page_folder, exist_ok=True)
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
-    library_path = os.path.join('media', 'library.json')
+    library_path = os.path.join(file_folder, 'library.json')
 
     with open(library_path, "r", encoding="utf8") as my_file:
-        library_json = my_file.read()
-    library = json.loads(library_json)
+        library = json.load(my_file)
     for book in library:
         image_link = urlsplit(book["image_link"])
         book['image_link'] = image_link.path.split('/')[2]
@@ -33,13 +57,17 @@ def on_reload():
         rendered_page = template.render(library=chunked(page, 2),
                                         quantity_pages=quantity_pages,
                                         page_number=page_number)
-        page_path = os.path.join('pages', f'index{page_number}.html')
+        page_path = os.path.join(page_folder, f'index{page_number}.html')
         with open(page_path, 'w', encoding="utf8") as file:
             file.write(rendered_page)
 
 
-on_reload()
+def main():
+    on_reload()
+    server = Server()
+    server.watch('template.html', on_reload)
+    server.serve(root='.')
 
-server = Server()
-server.watch('template.html', on_reload)
-server.serve(root='.')
+
+if __name__ == '__main__':
+    main()

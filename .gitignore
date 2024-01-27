@@ -5,7 +5,6 @@ __pycache__/
 d_photo.py
 # C extensions
 *.so
-images/
 # Distribution / packaging
 .Python
 build/
@@ -152,7 +151,6 @@ cython_debug/
 
 .idea/
 .idea/.name
-books/
 main_2.py
 new_parse.py
 main3.py
