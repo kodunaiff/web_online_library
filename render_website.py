@@ -50,11 +50,12 @@ def on_reload():
         book['image_link'] = image_link.path.split('/')[2]
         book['book_path'] = os.path.join(f"{book['book_name']}.txt")
 
-    page_quantity_books = 10
-    pages = chunked(library, page_quantity_books)
-    quantity_pages = math.ceil(len(library) / page_quantity_books)
+    quantity_books_on_page = 10
+    columns = 2
+    pages = chunked(library, quantity_books_on_page)
+    quantity_pages = math.ceil(len(library) / quantity_books_on_page)
     for page_number, page in enumerate(pages, 1):
-        rendered_page = template.render(library=chunked(page, 2),
+        rendered_page = template.render(library=chunked(page, columns),
                                         quantity_pages=quantity_pages,
                                         page_number=page_number)
         page_path = os.path.join(page_folder, f'index{page_number}.html')
