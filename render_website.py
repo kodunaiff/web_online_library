@@ -4,6 +4,7 @@ import math
 import os
 from urllib.parse import urlsplit
 
+from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from livereload import Server
 from more_itertools import chunked
@@ -18,7 +19,7 @@ def parse_arguments():
         '--file_folder',
         help='путь к каталогу с файлами',
         type=str,
-        default='media/'
+        default=os.environ['LIBRARY_PATH']
     )
     parser.add_argument(
         '-p',
@@ -34,6 +35,7 @@ def parse_arguments():
 
 
 def on_reload():
+    load_dotenv()
     file_folder, page_folder = parse_arguments()
     os.makedirs(page_folder, exist_ok=True)
     env = Environment(
